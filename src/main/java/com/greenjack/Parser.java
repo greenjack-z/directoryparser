@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -20,7 +19,7 @@ public class Parser {
     public void parse() {
         System.out.println("Looking for files in " + root + " and subdirectories...");
         Path rootPath = Path.of(root);
-        Map<Path, FileTypes> filesMap = new HashMap<>();
+        Map<FileTypes, Integer> filesCounter = new EnumMap<>(FileTypes.class);
         Map<FileTypes, Integer> pagesCounter = new EnumMap<>(FileTypes.class);
 
         try (Stream<Path> pathStream = Files.walk(rootPath)) {
@@ -36,24 +35,36 @@ public class Parser {
                             return;
                         }
                         int pageCount = type.getPageCounter().count(path.toFile());
-                        filesMap.put(path, type);
+                        filesCounter.merge(type, 1, Integer::sum);
                         pagesCounter.merge(type, pageCount, Integer::sum);
                     } catch (IllegalArgumentException e) {
-                        filesMap.put(path, FileTypes.OTHER);
+                        filesCounter.merge(FileTypes.OTHER, 1, Integer::sum);
                     }
                 });
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        int docs = filesCounter.entrySet().stream()
+                .filter(e -> !e.getKey().equals(FileTypes.OTHER))
+                .map(Map.Entry::getValue)
+                .reduce(0, Integer::sum);
+        System.out.printf("Overall documents: %d%n", docs);
 
-        System.out.println("Overall documents: " + filesMap.values().stream().filter(v -> !v.equals(FileTypes.OTHER)).count());
-        System.out.println("Overall pages: " + pagesCounter.values().stream().reduce(0, Integer::sum));
+        int pages = pagesCounter.values().stream().reduce(0, Integer::sum);
+        System.out.printf("Overall pages: %d%n", pages);
+
         for (FileTypes type : parsedTypes) {
-            System.out.println(type.getExtension() +
-                    " files : " +
-                    filesMap.values().stream().filter(v -> v.equals(type)).count() +
-                    " pages: " +
-                    pagesCounter.entrySet().stream().filter(e -> e.getKey().equals(type)).map(Map.Entry::getValue).reduce(0, Integer::sum));
+            int typeFilesCount = filesCounter.entrySet().stream()
+                    .filter(e -> e.getKey().equals(type))
+                    .map(Map.Entry::getValue)
+                    .reduce(0, Integer::sum);
+
+            int typePagesCount = pagesCounter.entrySet().stream()
+                    .filter(e -> e.getKey().equals(type))
+                    .map(Map.Entry::getValue)
+                    .reduce(0, Integer::sum);
+
+            System.out.printf("%s : %d files (%d pages)%n", type.getExtension(), typeFilesCount, typePagesCount);
         }
 
     }
