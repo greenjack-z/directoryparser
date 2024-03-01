@@ -44,7 +44,7 @@ public class Main {
             for (String extension : commandLine.getOptionValues(extensions)) {
                 parsedFiles.add(FileTypes.valueOf(extension.toUpperCase()));
             }
-            new Parser(commandLine.getOptionValue(path), parsedFiles).parse();
+            System.out.println(new Parser(commandLine.getOptionValue(path), parsedFiles).parse());
 
         } catch (ParseException e) {
             System.err.println(e.getMessage());
