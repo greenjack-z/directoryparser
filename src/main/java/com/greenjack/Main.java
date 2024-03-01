@@ -25,14 +25,14 @@ public class Main {
 
         Option extensions = Option.builder("e")
                 .longOpt("extensions")
-                .desc("extensions to parse in directory tree (comma separated, without preceding dot)")
+                .desc("extensions to parse (space separated, without dot)")
                 .hasArgs()
                 .argName("extension")
                 .valueSeparator(',')
                 .required()
                 .build();
 
-        options.addOption("h", "help", false,  "show this message")
+        options.addOption("h", "help", false, "show this message")
                 .addOption(path)
                 .addOption(extensions);
 
@@ -48,7 +48,7 @@ public class Main {
 
         } catch (ParseException e) {
             System.err.println(e.getMessage());
-            helpFormatter.printHelp("derectoryparser -p path -e extension [extension...]", options);
+            helpFormatter.printHelp("directoryparser -p path -e extension [extension...]", options);
         } catch (IllegalArgumentException e) {
             System.out.println("Not supported extension type:");
             StringBuilder typeList = new StringBuilder();

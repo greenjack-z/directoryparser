@@ -14,7 +14,7 @@ import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 public class Parser {
-    private final String  root;
+    private final String root;
     private final List<FileTypes> parsedTypes;
 
     public String parse() {

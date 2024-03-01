@@ -11,7 +11,7 @@ import java.io.InputStream;
 public class PageCounterDocxImpl implements PageCounter {
     @Override
     public int count(File file) {
-        try(InputStream is = new FileInputStream(file)) {
+        try (InputStream is = new FileInputStream(file)) {
             org.apache.poi.xwpf.usermodel.XWPFDocument doc = new XWPFDocument(is);
             return doc.getProperties().getExtendedProperties().getPages();
         } catch (IOException e) {
