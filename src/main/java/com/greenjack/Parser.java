@@ -15,7 +15,6 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class Parser {
     private final String root;
-    private final List<FileTypes> parsedTypes;
 
     public String parse() {
         System.out.println("Looking for files in " + root + " and subdirectories...");
@@ -50,7 +49,7 @@ public class Parser {
         int pages = pagesCounter.values().stream().reduce(0, Integer::sum);
         result.append(String.format("Overall pages: %d%n", pages));
 
-        for (FileTypes type : parsedTypes) {
+        for (FileTypes type : FileTypes.values()) {
             int typeFilesCount = filesCounter.entrySet().stream()
                     .filter(e -> e.getKey().equals(type))
                     .map(Map.Entry::getValue)

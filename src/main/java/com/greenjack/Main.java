@@ -23,39 +23,20 @@ public class Main {
                 .required()
                 .build();
 
-        Option extensions = Option.builder("e")
-                .longOpt("extensions")
-                .desc("extensions to parse (space separated, without dot)")
-                .hasArgs()
-                .argName("extension")
-                .valueSeparator(',')
-                .required()
-                .build();
 
         options.addOption("h", "help", false, "show this message")
-                .addOption(path)
-                .addOption(extensions);
+                .addOption(path);
+
 
         CommandLineParser commandLineParser = new DefaultParser();
         HelpFormatter helpFormatter = new HelpFormatter();
         try {
             CommandLine commandLine = commandLineParser.parse(options, args);
-            List<FileTypes> parsedFiles = new ArrayList<>();
-            for (String extension : commandLine.getOptionValues(extensions)) {
-                parsedFiles.add(FileTypes.valueOf(extension.toUpperCase()));
-            }
-            System.out.println(new Parser(commandLine.getOptionValue(path), parsedFiles).parse());
+            System.out.println(new Parser(commandLine.getOptionValue(path)).parse());
 
         } catch (ParseException e) {
             System.err.println(e.getMessage());
-            helpFormatter.printHelp("directoryparser -p path -e extension [extension...]", options);
-        } catch (IllegalArgumentException e) {
-            System.out.println("Not supported extension type:");
-            StringBuilder typeList = new StringBuilder();
-            for (FileTypes type : FileTypes.values()) {
-                typeList.append(type.getExtension()).append(" ");
-            }
-            System.out.println("supported extensions: " + typeList);
+            helpFormatter.printHelp("directoryparser -p path", options);
         }
     }
 }

@@ -14,8 +14,7 @@ Application is written in java and build using the maven.
 
 ### Usage
 ```
-usage: derectoryparser -p path -e extension [extension...]
--e,--extensions <extension>   extensions to parse (space separated, without dot)
+usage: derectoryparser -p path
 -h,--help                     show this message
 -p,--path <path>              root parsing directory tree
 ```
